@@ -9,9 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "next": "^16.3.5",
-    "react": "^19.1.2",
-    "react-dom": "^19.1.2"
+    "next": "16.3.2",
+    "react": "19.1.2",
+    "react-dom": "19.1.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -19,8 +19,9 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "^16.3.5",
+    "eslint-config-next": "16.3.2",
     "typescript": "^5"
   },
-  "description": "amerged marketing site — Agents Merged into your business"
+  "description": "amerged marketing site \u2014 Agents Merged into your business",
+  "packageManager": "npm@11.5.1"
 }

@@ -1,0 +1,14 @@
+version: 1
+project: amerged-website
+build:
+  install: npm ci --ignore-scripts
+  command: npm run build
+  output: .open-next/assets
+runtime:
+  mode: edge
+database:
+  enabled: false
+auth:
+  provider: none
+mail:
+  enabled: false
