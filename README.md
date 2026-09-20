@@ -25,7 +25,7 @@ The project brief is sent through the published ohmyhost transactional-mail clie
 - `CONTACT_RECIPIENT`: the single inbox that receives enquiries. Visitors cannot select a recipient.
 - `CONTACT_FORM_SECRET`: a separately generated random secret of at least 32 characters.
 
-The platform supplies the mail gateway URL, key and project ID. No database, provider credentials or additional outbound origins are required. The original page design and animation remain intact.
+The platform supplies the mail gateway URL, key, project ID and private `OHMYHOST_MAIL_GATEWAY` service binding. The request resolves these through OpenNext's Cloudflare context and sends only through that binding; a missing binding reports unavailable. No database, provider credentials or additional outbound origins are required. The original page design and animation remain intact.
 
 `GET /api/contact` issues a signed form receipt bound to the platform-provided visitor IP and a 15-minute slot. `POST /api/contact` accepts bounded, same-origin JSON only, validates the brief and honeypot, and uses that receipt as the gateway's durable idempotency key. Different content in the same slot is refused; the platform also enforces its project quotas. No plaintext visitor IP is stored or included in the email.
 

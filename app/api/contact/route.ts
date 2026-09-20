@@ -1,6 +1,9 @@
-import { createContactHandlers } from "./contact";
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { createContactHandlers, type ContactEnvironment } from "./contact";
 
-const contact = createContactHandlers({ environment: process.env });
+const contact = createContactHandlers({
+  environment: async () => (await getCloudflareContext({ async: true })).env as ContactEnvironment,
+});
 
 export const dynamic = "force-dynamic";
 

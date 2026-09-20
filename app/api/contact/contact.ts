@@ -13,7 +13,14 @@ const SERVICES = new Set([
   "Let’s find out together",
 ]);
 
-type Environment = Readonly<Record<string, string | undefined>>;
+export interface ContactEnvironment {
+  readonly CONTACT_FORM_SECRET?: string;
+  readonly CONTACT_RECIPIENT?: string;
+  readonly OHMYHOST_PROJECT_ID?: string;
+  readonly OHMYHOST_MAIL_GATEWAY_URL?: string;
+  readonly OHMYHOST_MAIL_KEY?: string;
+  readonly OHMYHOST_MAIL_GATEWAY?: { fetch(request: Request): Promise<Response> };
+}
 type Brief = { name: string; email: string; service: string; message: string };
 
 class FormError extends Error {
@@ -28,22 +35,26 @@ class FormError extends Error {
 
 /** The gateway stores the durable mail claim; this application needs no database. */
 export function createContactHandlers(dependencies: {
-  environment: Environment;
-  fetch?: (request: Request) => Promise<Response>;
+  environment: ContactEnvironment | (() => Promise<ContactEnvironment>);
   now?: () => number;
 }) {
   const now = dependencies.now ?? Date.now;
-  function configuration() {
-    const env = dependencies.environment;
+  async function configuration() {
+    const env =
+      typeof dependencies.environment === "function"
+        ? await dependencies.environment()
+        : dependencies.environment;
     const secret = env.CONTACT_FORM_SECRET ?? "";
     const recipient = (env.CONTACT_RECIPIENT ?? "").trim().toLowerCase();
     if (secret.length < 32 || !validEmail(recipient)) throw new FormError(503, "unavailable");
+    const gateway = env.OHMYHOST_MAIL_GATEWAY;
+    if (!gateway || typeof gateway.fetch !== "function") throw new FormError(503, "unavailable");
     const projectId = env.OHMYHOST_PROJECT_ID ?? "";
     const mail = createTransactionalMailClient({
       endpoint: env.OHMYHOST_MAIL_GATEWAY_URL ?? "",
       key: env.OHMYHOST_MAIL_KEY ?? "",
       projectId,
-      fetch: dependencies.fetch ?? globalThis.fetch,
+      fetch: (request) => gateway.fetch(request),
       timeoutMilliseconds: 15_000,
     });
     return { secret, recipient, projectId, mail };
@@ -53,7 +64,7 @@ export function createContactHandlers(dependencies: {
       try {
         if (request.headers.get("sec-fetch-site") === "cross-site")
           throw new FormError(403, "forbidden");
-        const config = configuration();
+        const config = await configuration();
         const slot = Math.floor(now() / WINDOW_MS);
         const signature = sign(config.secret, config.projectId, trustedIp(request), slot);
         return reply(200, {
@@ -65,7 +76,7 @@ export function createContactHandlers(dependencies: {
       }
     },
     async POST(request: Request): Promise<Response> {
-      let config: ReturnType<typeof configuration>;
+      let config: Awaited<ReturnType<typeof configuration>>;
       let brief: Brief;
       let idempotencyKey: string;
       try {
@@ -73,7 +84,7 @@ export function createContactHandlers(dependencies: {
           throw new FormError(403, "forbidden");
         if (request.headers.get("content-type")?.split(";", 1)[0]?.trim() !== "application/json")
           throw new FormError(415, "invalid_request");
-        config = configuration();
+        config = await configuration();
         const ip = trustedIp(request);
         const input = await readBody(request);
         brief = parseBrief(input);

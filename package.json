@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ohmyhost/customer-runtime": "https://ohmyho.st/releases/0.1.6/ohmyhost-customer-runtime-0.1.6.tgz",
+    "@ohmyhost/customer-runtime": "https://ohmyho.st/releases/0.1.8/ohmyhost-customer-runtime-0.1.8.tgz",
+    "@opennextjs/cloudflare": "1.20.2",
     "next": "16.3.2",
     "react": "19.1.2",
     "react-dom": "19.1.2"

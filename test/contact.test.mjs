@@ -21,9 +21,7 @@ function fixture(options = {}) {
   let now = Date.parse("2026-09-19T12:14:50.000Z");
   const calls = [],
     stored = new Map();
-  const handlers = createContactHandlers({
-    environment: { ...environment, ...options.environment },
-    now: () => now,
+  const gateway = {
     fetch: async (request) => {
       const body = await request.json();
       const key = request.headers.get("idempotency-key");
@@ -41,6 +39,14 @@ function fixture(options = {}) {
         { state: "accepted", request_id: "00000000000000000000000002", message_id: "mail-example" },
         { status: 202 },
       );
+    },
+  };
+  const runtime = { ...environment, OHMYHOST_MAIL_GATEWAY: gateway, ...options.environment };
+  const handlers = createContactHandlers({
+    environment: options.lazy ? async () => runtime : runtime,
+    now: () => now,
+    fetch: async () => {
+      throw Error("contact mail must not use an external fetch fallback");
     },
   });
   return {
@@ -72,8 +78,8 @@ function fixture(options = {}) {
   };
 }
 
-test("submits only to the server recipient and escapes submitted HTML", async () => {
-  const f = fixture();
+test("submits through the request-scoped private mail binding and escapes submitted HTML", async () => {
+  const f = fixture({ lazy: true });
   const response = await f.post({ ...brief, name: "<Example & Person>", token: await f.token() });
   assert.equal(response.status, 202);
   assert.deepEqual(await response.json(), { state: "accepted" });
@@ -151,6 +157,13 @@ test("requires configured secrets and platform IP without exposing either", asyn
   );
   assert.equal(response.status, 503);
   assert.deepEqual(await response.json(), { state: "error", code: "unavailable" });
+  const missingBinding = fixture({ environment: { OHMYHOST_MAIL_GATEWAY: undefined } });
+  const unavailable = await missingBinding.handlers.GET(
+    new Request(origin + "/api/contact", { headers: { "cf-connecting-ip": "203.0.113.7" } }),
+  );
+  assert.equal(unavailable.status, 503);
+  assert.deepEqual(await unavailable.json(), { state: "error", code: "unavailable" });
+  assert.equal(missingBinding.calls.length, 0);
   const f = fixture(),
     token = await f.token();
   assert.equal((await f.post({ ...brief, token }, { "cf-connecting-ip": "" })).status, 503);
