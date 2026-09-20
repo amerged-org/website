@@ -112,7 +112,7 @@ dialog{color:var(--ink);background:var(--paper);border:1px solid var(--ink);widt
 
 
 /* noscript progressive enhancement */
-.menu-button,.figure-controls,.motion-button,.figure-note,.contact-trigger{display:none!important}.system-top>span:last-child{display:none}@media(max-width:680px){#mobile-nav{display:flex!important;flex-wrap:wrap;gap:0 20px;font-size:10px}}
+.no-js .menu-button,.no-js .figure-controls,.no-js .motion-button,.no-js .figure-note,.no-js .contact-trigger{display:none!important}.no-js .system-top>span:last-child{display:none}@media(max-width:680px){.no-js #mobile-nav{display:flex!important;flex-wrap:wrap;gap:0 20px;font-size:10px}}
 /* A bot trap stays outside the visual and keyboard flow. */
 .contact-honeypot{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
 .brief-form .primary-link:disabled{cursor:wait;opacity:.65}

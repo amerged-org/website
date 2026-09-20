@@ -5,6 +5,7 @@ import { initContactForm } from "./contact-form";
  */
 export function initExperience() {
   if (typeof window === 'undefined') return () => {};
+  document.documentElement.classList.remove('no-js');
   const cleanups = [];
   const listen = (target, type, handler, options) => {
     if (!target) return;
