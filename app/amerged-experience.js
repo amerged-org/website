@@ -1,7 +1,7 @@
-// @ts-nocheck
+import { initContactForm } from "./contact-form";
 /** amerged: progressive enhancement shared by HTML and Next.js.
  * Every listener, observer and animation is cleaned up for React Strict Mode.
- * No tracking, network submission or persistent storage is used.
+ * Contact submission is an explicit same-origin form action. No tracking is used.
  */
 export function initExperience() {
   if (typeof window === 'undefined') return () => {};
@@ -96,49 +96,7 @@ export function initExperience() {
     if (description) description.textContent = layers[index][1];
   }));
 
-  // Honest local-only prototype: the form exports a brief; it does not pretend to send mail.
-  const dialog = document.getElementById('brief-dialog');
-  const form = document.getElementById('brief-form');
-  const status = document.getElementById('form-status');
-  let returnFocus = null;
-  const initialStatus = 'Design preview: saves a text file on your device. No message is sent and no details are stored by this page.';
-  document.querySelectorAll('[data-contact]').forEach(button => listen(button, 'click', () => {
-    if (!(dialog instanceof HTMLDialogElement)) return;
-    returnFocus = button;
-    if (status) status.textContent = initialStatus;
-    dialog.showModal();
-    document.getElementById('brief-name')?.focus();
-  }));
-  listen(document.getElementById('close-dialog'), 'click', () => dialog?.close());
-  listen(dialog, 'click', event => {
-    if (event.target !== dialog) return;
-    const bounds = dialog.getBoundingClientRect();
-    if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
-  });
-  listen(dialog, 'close', () => returnFocus?.focus());
-  const objectUrls = new Set();
-  listen(form, 'submit', event => {
-    event.preventDefault();
-    if (!(form instanceof HTMLFormElement) || !form.reportValidity()) return;
-    const data = new FormData(form);
-    const value = name => String(data.get(name) || '').trim();
-    const text = [
-      'amerged — Project brief',
-      'Prepared locally. This brief has not been sent to amerged.',
-      '', `Name: ${value('name')}`, `Email: ${value('email')}`,
-      `Area: ${value('service')}`, '', 'The opportunity', value('message'), ''
-    ].join('\n');
-    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    objectUrls.add(url);
-    const download = document.createElement('a');
-    download.href = url; download.download = 'amerged-project-brief.txt';
-    document.body.appendChild(download); download.click(); download.remove();
-    // Keep the object URL alive until cleanup; Safari may begin the download asynchronously.
-    if (status) status.textContent = 'Your project brief is ready to save on your device. Nothing has been sent to amerged.';
-  });
-  cleanups.push(() => objectUrls.forEach(url => URL.revokeObjectURL(url)));
-
+  cleanups.push(initContactForm());
 
   // Logo-only revision: show "agents    merged." before merging the words.
   // Both suffixes share a baseline and have no background or masking layer.
