@@ -181,28 +181,26 @@ export function initExperience() {
     if (reduced.matches && logoAnimated) { logo.setCurrentTime(4.6); logo.pauseAnimations(); }
   });
 
-  // Hero story (SMIL): the caption, steps and labels follow the SVG clock.
+  // Hero story (SMIL): the caption, its progress bar and the labels follow
+  // the SVG clock. The loop plays continuously; reduced motion keeps it still.
   const story = document.getElementById('amerged-story-a');
-  const storyPause = document.getElementById('story-pause');
-  const storyReplay = document.getElementById('story-replay');
   const storyCaption = document.getElementById('story-caption');
-  const storyStatus = document.getElementById('story-status');
-  const storySteps = [...document.querySelectorAll('.story-step')];
+  const storyCaptionIndex = document.getElementById('story-caption-index');
+  const storyCaptionPhase = document.getElementById('story-caption-phase');
+  const storyProgress = document.getElementById('story-progress');
   if (story) {
     const storyLabels = [...story.querySelectorAll('.amg-part')];
     const narrow = window.matchMedia('(max-width: 600px)');
     const duration = 20;
     const phases = [
-      { start: 0, end: 4.6, seek: 1.8, parts: ['context'], copy: 'We start with the way you work.' },
-      { start: 4.6, end: 13.2, seek: 9, parts: ['build', 'train'], copy: 'We build solutions. We teach your team how.' },
-      { start: 13.2, end: 14.8, seek: 13.7, parts: ['run'], copy: 'Put the software and the skills to work.' },
-      { start: 14.8, end: 20, seek: 17.2, parts: ['feedback'], copy: 'What we learn becomes your next context.' }
+      { start: 0, end: 4.6, parts: ['context'], name: 'Your context', copy: 'We start with the way you work.' },
+      { start: 4.6, end: 13.2, parts: ['build', 'train'], name: 'Build / train', copy: 'We build solutions. We teach your team how.' },
+      { start: 13.2, end: 16.4, parts: ['run'], name: 'Run it', copy: 'Put the software and the skills to work.' },
+      { start: 16.4, end: 20, parts: ['feedback'], name: 'Learn / iterate', copy: 'What we learn becomes your next context.' }
     ];
     const supported = typeof story.pauseAnimations === 'function';
-    let storyPaused = reduced.matches;
     let selected = -1;
-    let wasRunning = false;
-    const resize = () => story.setAttribute('viewBox', narrow.matches ? '65 83 750 557' : '0 0 860 650');
+    const resize = () => story.setAttribute('viewBox', narrow.matches ? '65 60 750 580' : '0 0 860 650');
     const time = () => supported ? story.getCurrentTime() % duration : 0;
     function paint() {
       const t = time();
@@ -212,51 +210,32 @@ export function initExperience() {
       if (selected !== index) {
         selected = index;
         if (storyCaption) storyCaption.textContent = phase.copy;
-        storySteps.forEach((button, j) => button.setAttribute('aria-pressed', String(index === j)));
+        if (storyCaptionIndex) storyCaptionIndex.textContent = String(index + 1).padStart(2, '0');
+        if (storyCaptionPhase) storyCaptionPhase.textContent = phase.name;
         storyLabels.forEach(label => label.classList.toggle('is-active', phase.parts.includes(label.dataset.phase)));
+        // Make each change of phase visible: the caption rises in.
+        const captionLine = storyCaption?.closest('.story-caption');
+        if (!reduced.matches && captionLine?.animate) {
+          captionLine.animate(
+            [{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }],
+            { duration: 520, easing: 'cubic-bezier(.2,.7,.2,1)' });
+        }
       }
-      storySteps[index]?.style.setProperty('--progress', String(Math.min(1, Math.max(.01, (t - phase.start) / (phase.end - phase.start)))));
+      storyProgress?.style.setProperty('--progress', String(Math.min(1, Math.max(0, (t - phase.start) / (phase.end - phase.start)))));
     }
-    function setStoryPaused(value) {
-      storyPaused = value;
-      if (supported) storyPaused ? story.pauseAnimations() : story.unpauseAnimations();
-      if (storyPause) {
-        storyPause.textContent = storyPaused ? 'Play' : 'Pause';
-        storyPause.setAttribute('aria-label', storyPaused ? 'Play the loop' : 'Pause the loop');
-        storyPause.setAttribute('aria-pressed', String(storyPaused));
-      }
+    function syncMotion() {
+      if (!supported) return;
+      if (reduced.matches || document.hidden) story.pauseAnimations();
+      else story.unpauseAnimations();
       paint();
     }
-    const playStory = () => { story.dataset.motion = 'on'; setStoryPaused(false); };
-    listen(storyPause, 'click', () => {
-      if (storyPaused) playStory(); else setStoryPaused(true);
-      if (storyStatus) storyStatus.textContent = storyPaused ? 'Animation paused.' : 'Animation playing.';
-    });
-    listen(storyReplay, 'click', () => {
-      if (supported) story.setCurrentTime(0);
-      playStory();
-      if (storyStatus) storyStatus.textContent = 'Restarted at your context.';
-    });
-    storySteps.forEach((button, i) => listen(button, 'click', () => {
-      if (supported) story.setCurrentTime(phases[i].seek);
-      story.dataset.motion = 'on';
-      setStoryPaused(true);
-      if (storyStatus) storyStatus.textContent = phases[i].copy;
-    }));
-    listen(document, 'visibilitychange', () => {
-      if (!supported) return;
-      if (document.hidden) { wasRunning = !storyPaused; story.pauseAnimations(); }
-      else { if (wasRunning && !storyPaused) story.unpauseAnimations(); paint(); }
-    });
-    listen(reduced, 'change', () => {
-      if (reduced.matches) { story.removeAttribute('data-motion'); setStoryPaused(true); }
-    });
+    listen(document, 'visibilitychange', syncMotion);
+    listen(reduced, 'change', syncMotion);
     listen(narrow, 'change', resize);
     resize();
     if (supported) story.setCurrentTime(.05);
-    else { if (storyPause) storyPause.hidden = true; if (storyReplay) storyReplay.hidden = true; }
-    setStoryPaused(storyPaused);
-    const storyTimer = window.setInterval(() => { if (!document.hidden) paint(); }, 120);
+    syncMotion();
+    const storyTimer = window.setInterval(() => { if (!document.hidden) paint(); }, 60);
     cleanups.push(() => window.clearInterval(storyTimer));
   }
   return () => cleanups.forEach(cleanup => cleanup());

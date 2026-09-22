@@ -73,18 +73,19 @@ dialog{color:var(--ink);background:var(--paper);border:1px solid var(--ink);widt
 @media(max-width:680px){.brand-lockup{width:214px}}
 @media(max-width:365px){.brand-lockup{width:196px}}
 
-/* Hero figure: the a-shaped story loop replaces the agent loop. */
-.hero-figure .figure-stage.story-stage{aspect-ratio:auto;margin:6px 0 4px}
+/* Hero figure: the a-shaped story loop replaces the agent loop. The caption
+   names the current phase; a quiet bar underneath shows its progress. */
+.header{border-bottom:1px solid var(--ink)}
+.hero-figure .figure-stage.story-stage{aspect-ratio:auto;margin:0 0 36px}
 .story-stage>svg{display:block;width:100%;height:auto;overflow:visible}
-.story-playback{display:flex;gap:16px;flex-shrink:0}
-.story-playback .motion-button{display:revert!important}
-.story-playback .motion-button{padding-left:0}
-.hero-figure .story-controls{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}
-.story-step{position:relative}
-.story-step[aria-pressed='true']{border-top-color:var(--line)}
-.story-step::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:var(--red);transform:scaleX(0);transform-origin:left}
-.story-step[aria-pressed='true']::before{transform:scaleX(var(--progress,0))}
-@media(max-width:850px){.story-controls{gap:10px}}
+.hero-figure .story-figcaption{display:block;border-top:0;padding:0 0 59px}
+.story-caption{display:flex;align-items:baseline;gap:14px;min-height:1.45em;font-size:17px;line-height:1.45;color:var(--ink)}
+.story-caption-index{font:10px/1 var(--mono);letter-spacing:.06em}
+.story-caption-phase{white-space:nowrap}
+.story-sentence{position:relative;display:inline}
+.story-progress{position:absolute;left:0;right:0;bottom:-16px;height:1px}
+.story-progress::after{content:'';position:absolute;inset:0;background:var(--red);transform:scaleX(var(--progress,0));transform-origin:left}
+@media(max-width:850px){.story-caption{font-size:15px}.hero-figure .figure-stage.story-stage{margin-bottom:22px}}
 
 /* Three disciplines: one row on wide screens, a single column on phones. */
 .service-grid{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:36px}
