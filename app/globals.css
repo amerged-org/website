@@ -103,8 +103,32 @@ dialog{color:var(--ink);background:var(--paper);border:1px solid var(--ink);widt
 @media(max-width:680px){.knowledge-stage{padding-top:24px}#amerged-knowledge .kn-label{font-size:18px}}
 @media(prefers-reduced-motion:reduce){#amerged-knowledge .kn-motion{display:none}}
 .system .layer[aria-pressed='true']{border-top-color:var(--line)}
+.system{border-top:0}
+.knowledge-stage{border-top:1px solid var(--ink)}
+.system .layer-number{font:10px/1.5 var(--mono);letter-spacing:.06em}
+.system .layer-title{margin-top:10px}
+.layer-text{display:block;margin-top:10px;font-size:15px;line-height:1.55;color:var(--body);max-width:230px}
+.system .layer>span{transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.system .layer[aria-pressed='false']>span{opacity:.42}
+.system .layer[aria-pressed='true']>span{opacity:1}
+.system .layer[aria-pressed='true'] .layer-text{transform:translateY(-2px)}
+.system .layer:hover>span{opacity:1}
+.system .system-layers{padding-bottom:0}
 .system .layer::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:var(--red);transform:scaleX(0);transform-origin:left}
 .system .layer[aria-pressed='true']::before{transform:scaleX(var(--progress,1))}
+
+/* Footer lockup: the finished logo, static. */
+.footer-brand{display:block;flex-shrink:0;width:132px;line-height:0}
+.footer-brand svg{display:block;width:100%;height:auto;overflow:visible}
+.footer .footer-note{font:13px/1.5 var(--serif);letter-spacing:0;color:var(--body)}
+.footer-note em{font-style:italic}
+
+/* Cookie notice: small, bottom right, one line. */
+.cookie-note{position:fixed;right:max(16px,var(--gutter));bottom:16px;z-index:40;display:flex;align-items:center;gap:18px;max-width:calc(100vw - 32px);padding:12px 14px 12px 18px;background:var(--paper);border:1px solid var(--ink);font-size:14px;line-height:1.4;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+.cookie-note[hidden]{display:none}
+.cookie-note button{font:10px/1 var(--mono);letter-spacing:.06em;padding:9px 12px;background:var(--ink);color:var(--paper)}
+.cookie-note button:hover{background:var(--red)}
+@media print{.cookie-note{display:none!important}}
 
 /* Three disciplines: one row on wide screens, a single column on phones. */
 .service-grid{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:36px}

@@ -81,24 +81,15 @@ export function initExperience() {
 
   // Context engineering figure (SMIL): the signal wave crosses one quarter of
   // the funnel per layer. The layers below follow it; a click jumps there.
-  const layers = [
-    ['01 / EXTRACT', 'Capture the documents, decisions and exceptions behind a process.'],
-    ['02 / STRUCTURE', 'Turn that knowledge into context: relevant facts, decision rules, permissions and tool access.'],
-    ['03 / EXECUTE', 'Connect agents to your systems, with clear tasks, approvals and exception handling.'],
-    ['04 / EVALUATE', 'Measure quality, reliability and manual effort. Use the results to improve the system.']
-  ];
+  const layerCount = 4;
   const knowledge = document.getElementById('amerged-knowledge');
   const layerButtons = [...document.querySelectorAll('[data-layer]')];
-  const layerLabel = document.getElementById('layer-label');
-  const layerDescription = document.getElementById('layer-description');
   const knowledgeClock = !!knowledge && typeof knowledge.getCurrentTime === 'function';
   let activeLayer = -1;
   function showLayer(index) {
-    if (index === activeLayer || !layers[index]) return;
+    if (index === activeLayer || index < 0 || index >= layerCount) return;
     activeLayer = index;
     layerButtons.forEach((item, j) => item.setAttribute('aria-pressed', String(j === index)));
-    if (layerLabel) layerLabel.textContent = layers[index][0];
-    if (layerDescription) layerDescription.textContent = layers[index][1];
   }
   function paintKnowledge() {
     if (!knowledgeClock) return;
@@ -109,7 +100,7 @@ export function initExperience() {
   }
   layerButtons.forEach(button => listen(button, 'click', () => {
     const index = Number(button.getAttribute('data-layer'));
-    if (!layers[index]) return;
+    if (!(index >= 0 && index < layerCount)) return;
     if (knowledgeClock) knowledge.setCurrentTime(index * 4 + .05);
     showLayer(index);
     paintKnowledge();
@@ -127,6 +118,18 @@ export function initExperience() {
     cleanups.push(() => window.clearInterval(knowledgeTimer));
     paintKnowledge();
   }
+
+  // Cookie notice: technical cookies only, so this is information, not consent.
+  // Dismissal is remembered locally; storage can be unavailable.
+  const cookieNote = document.getElementById('cookie-note');
+  const cookieKey = 'amerged-cookie-note';
+  let cookieSeen = false;
+  try { cookieSeen = window.localStorage.getItem(cookieKey) === '1'; } catch { /* storage blocked */ }
+  if (cookieNote && !cookieSeen) cookieNote.hidden = false;
+  listen(document.getElementById('cookie-ok'), 'click', () => {
+    if (cookieNote) cookieNote.hidden = true;
+    try { window.localStorage.setItem(cookieKey, '1'); } catch { /* storage blocked */ }
+  });
 
   // Honest local-only prototype: the form exports a brief; it does not pretend to send mail.
   const dialog = document.getElementById('brief-dialog');
@@ -178,20 +181,25 @@ export function initExperience() {
   const logoMark = document.getElementById('amg-brand-drawn-a');
   const brandLink = document.querySelector('.brand-lockup');
   const logoAnimated = !!logo && typeof logo.setCurrentTime === 'function';
-  // Snap the drawn a to the rendered baseline at any logo size.
+  // Snap the drawn a to the rendered baseline at any logo size (header and footer).
+  const footerLogo = document.getElementById('amerged-footer-brand');
+  const lockups = [[logo, logoMark], [footerLogo, document.getElementById('amg-foot-drawn-a')]];
   function alignLogoMark() {
-    const matrix = logo?.getScreenCTM();
-    if (!matrix || !logoMark) return;
-    const scale = Math.hypot(matrix.c, matrix.d);
-    if (!(scale > 0)) return;
-    const y = 17.2 - 2 / scale;
-    logoMark.setAttribute('transform',
-      `translate(-18.7635 ${y.toFixed(6)}) scale(.104) translate(352.122971 263.440361) rotate(5) scale(.95) scale(1.05 1) translate(-352.122971 -263.440361)`);
+    lockups.forEach(([svg, mark]) => {
+      const matrix = svg?.getScreenCTM();
+      if (!matrix || !mark) return;
+      const scale = Math.hypot(matrix.c, matrix.d);
+      if (!(scale > 0)) return;
+      const y = 17.2 - 2 / scale;
+      mark.setAttribute('transform',
+        `translate(-18.7635 ${y.toFixed(6)}) scale(.104) translate(352.122971 263.440361) rotate(5) scale(.95) scale(1.05 1) translate(-352.122971 -263.440361)`);
+    });
   }
   alignLogoMark();
   if (logo && typeof ResizeObserver === 'function') {
     const logoObserver = new ResizeObserver(alignLogoMark);
     logoObserver.observe(logo);
+    if (footerLogo) logoObserver.observe(footerLogo);
     cleanups.push(() => logoObserver.disconnect());
   } else {
     listen(window, 'resize', alignLogoMark, { passive: true });
