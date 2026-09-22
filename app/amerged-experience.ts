@@ -106,12 +106,24 @@ export function initExperience() {
     paintKnowledge();
   }));
   if (knowledge && knowledgeClock) {
+    // The loop waits at 01 until the figure is actually on screen, so a
+    // visitor who scrolls down sees it from the start, not mid-way. It pauses
+    // while scrolled away and continues where it left off.
+    let knowledgeInView = !('IntersectionObserver' in window);
     const syncKnowledge = () => {
-      if (reduced.matches || document.hidden) knowledge.pauseAnimations();
+      if (reduced.matches || document.hidden || !knowledgeInView) knowledge.pauseAnimations();
       else knowledge.unpauseAnimations();
     };
-    if (reduced.matches) knowledge.setCurrentTime(8);
+    knowledge.setCurrentTime(reduced.matches ? 8 : 0);
     syncKnowledge();
+    if ('IntersectionObserver' in window) {
+      const knowledgeObserver = new IntersectionObserver(entries => {
+        knowledgeInView = entries[0]?.isIntersecting ?? false;
+        syncKnowledge();
+      }, { threshold: .35 });
+      knowledgeObserver.observe(knowledge);
+      cleanups.push(() => knowledgeObserver.disconnect());
+    }
     listen(document, 'visibilitychange', syncKnowledge);
     listen(reduced, 'change', syncKnowledge);
     const knowledgeTimer = window.setInterval(() => { if (!document.hidden) paintKnowledge(); }, 80);
