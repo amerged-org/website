@@ -32,18 +32,9 @@ dialog{color:var(--ink);background:var(--paper);border:1px solid var(--ink);widt
 @media print{.shell{max-width:none;padding:0}.header{height:65px}.brand-note{display:block}.nav,.menu-button,.mobile-nav,.progress,.hero-actions,.figure-controls,.motion-button,.figure-note,.contact-trigger,.top-link,dialog{display:none!important}.hero{grid-template-columns:1.1fr 1fr;padding:30px 0;min-height:auto}h1{font-size:46pt}.hero-description{font-size:12pt}.hero-figure{max-width:280px}.paper-section{padding-block:25px;grid-template-columns:15% 1fr;gap:20px}.section-title{font-size:26pt}.service-grid{grid-template-columns:1fr 1fr}.service h3{font-size:18pt}.service p,.context-copy p,.method-step p{font-size:11pt}.method-grid{grid-template-columns:repeat(3,1fr)}.will-reveal{opacity:1!important;transform:none!important}.service,.method-step{break-inside:avoid}.contact-title{font-size:32pt}.figure-caption{font-size:8pt}.footer{min-height:0}.contact-bottom p{font-size:11pt}}
 
 
-/* Revision: the original editorial cover, with a quiet wordmark transition.
-   The brand animation is in the masthead only. The claim is a small signature. */
+/* Revision: the original editorial cover. The masthead carries the SVG lockup
+   ("agents" becomes the drawn a); the claim is part of that lockup. */
 .header{gap:32px}
-.brand-lockup{display:inline-flex;flex-direction:column;align-items:flex-start;justify-content:center;flex-shrink:0;gap:5px}
-.animated-wordmark{display:inline-flex;align-items:baseline;gap:0;font-size:44px;line-height:1.12;font-weight:400;letter-spacing:-.06em;isolation:isolate}
-.logo-a,.logo-dot{position:relative;display:block;flex-shrink:0}
-.logo-a{z-index:3}
-.logo-tail{position:relative;display:block;overflow:visible;isolation:isolate}
-.logo-merged{position:relative;z-index:2;display:block;background:transparent;transform:translateX(0)}
-.logo-gents{position:absolute;top:0;left:0;z-index:1;display:block;opacity:0;white-space:nowrap;pointer-events:none}
-.logo-dot{z-index:4;color:var(--red)}
-.brand-claim{display:block;font:11px/1.4 var(--serif);letter-spacing:.003em;color:var(--body);white-space:nowrap}
 .hero-description{max-width:410px;font-size:19px;line-height:1.6}
 .context-copy{display:block;max-width:590px}
 .context-copy p{font-size:19px}
@@ -51,18 +42,13 @@ dialog{color:var(--ink);background:var(--paper);border:1px solid var(--ink);widt
 @media(min-width:1151px){.hero{min-height:650px}.hero-copy{padding-bottom:12px}}
 @media(max-width:1150px){.header .nav{gap:24px}.hero-description{font-size:18px}}
 @media(max-width:850px){.header .nav{gap:19px;font-size:9px}.hero-description{font-size:18px;max-width:340px}}
-@media(max-width:680px){.header{height:102px}.animated-wordmark{font-size:38px}.brand-lockup{gap:3px}.brand-claim{font-size:10px}.hero-description{font-size:19px;max-width:380px}.hero{padding-top:43px}.context-copy p{font-size:18px}}
-@media(max-width:365px){.animated-wordmark{font-size:35px}.brand-claim{font-size:9px}.hero-description{font-size:18px}}
-@media(prefers-reduced-motion:reduce){.logo-merged{transform:none!important;opacity:1!important}.logo-gents{opacity:0!important}.logo-dot{transform:none!important}}
-@media print{.logo-gents{display:none!important}.logo-merged{opacity:1!important;clip-path:none!important;transform:none!important}.logo-dot{transform:none!important}}
+@media(max-width:680px){.header{height:102px}.hero-description{font-size:19px;max-width:380px}.hero{padding-top:43px}.context-copy p{font-size:18px}}
+@media(max-width:365px){.hero-description{font-size:18px}}
 
 /* Typography refinement: the masthead, claim, reading text and headline share
    one serif. Only indices / technical marginalia retain their mono face. */
-.logo-a,.brand-a{font-family:var(--serif);font-style:italic;font-weight:400}
-.logo-a{letter-spacing:-.04em;padding-right:.012em}
-.animated-wordmark,.wordmark{font-family:var(--serif);font-kerning:normal}
-.brand-claim{font-family:var(--serif);font-size:12px;font-style:normal;line-height:1.45;letter-spacing:0}
-.brand-claim em{font-family:inherit;font-style:italic}
+.brand-a{font-family:var(--serif);font-style:italic;font-weight:400}
+.wordmark{font-family:var(--serif);font-kerning:normal}
 .header .nav{font:14px/1.5 var(--serif);gap:30px}
 .header .nav a small{font-family:var(--mono)}
 .mobile-nav{font:18px/1.65 var(--serif)}
@@ -73,43 +59,48 @@ dialog{color:var(--ink);background:var(--paper);border:1px solid var(--ink);widt
 .footer .wordmark{gap:0}
 /* A real, closed SVG feedback loop. The wire surface stays calm and readable;
    movement belongs to the signal, not a spinning abstract sculpture. */
-.figure-stage{aspect-ratio:1.32}
-.figure-stage>.agent-loop{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.loop-scene{transform-origin:300px 215px}
-.loop-guide{fill:none;stroke:var(--ink);stroke-opacity:.09;stroke-width:.6;stroke-dasharray:2 5}
-.loop-wire{fill:none;stroke:var(--ink);stroke-width:.6;stroke-opacity:.21}
-.loop-wire.edge{stroke-width:.85;stroke-opacity:.36}
-.loop-cross{fill:none;stroke:var(--ink);stroke-width:.65;stroke-opacity:.2}
-.loop-input{fill:none;stroke:var(--ink);stroke-width:.7;stroke-opacity:.23}
-.loop-input-dot{fill:var(--paper);stroke:var(--ink);stroke-width:.7;stroke-opacity:.45}
-.loop-input-signal{fill:var(--red);opacity:.6}
-.loop-route{fill:none;stroke:var(--red);stroke-width:.9;stroke-opacity:.33}
-.loop-zone{fill:none;stroke:var(--red);stroke-width:1.15;stroke-opacity:0;transition:stroke-opacity .5s}
-.loop-zone.is-active{stroke-opacity:.9}
-.loop-direction{fill:none;stroke:var(--red);stroke-opacity:.65;stroke-width:.9;stroke-linecap:round;stroke-linejoin:round}
-.loop-trail{fill:none;stroke:var(--red);stroke-width:1.65;stroke-linecap:round}
-.loop-signal{fill:var(--red);stroke:var(--paper);stroke-width:1.3}
-.loop-station circle{fill:var(--paper);stroke:var(--ink);stroke-width:.85;stroke-opacity:.5;transition:stroke .4s,fill .4s}
-.loop-station .station-core{fill:var(--ink);stroke:none;opacity:.45}
-.loop-station.is-active>circle{stroke:var(--red);stroke-opacity:1}
-.loop-station.is-active .station-core{fill:var(--red);stroke:none;opacity:1}
-.loop-leader{fill:none;stroke:var(--ink);stroke-opacity:.3;stroke-width:.7}
-.loop-name{font:italic 20px var(--serif);fill:var(--body);transition:fill .4s}
-.loop-index{font:8px var(--mono);letter-spacing:.08em;fill:var(--muted)}
-.loop-caption{font:9px var(--mono);fill:var(--muted);letter-spacing:.015em}
-.loop-label.is-active .loop-name{fill:var(--red)}
-.loop-center{font:italic 18px var(--serif);fill:var(--muted)}
-.loop-center-note{font:7px var(--mono);fill:var(--muted);letter-spacing:.11em}
-.figure-formula{font-family:var(--serif);font-size:16px;bottom:0;gap:9px}
-.figure-formula .loop-return{width:23px;color:var(--red)}
-.figure-note{font-family:var(--serif);font-size:13px;line-height:1.5;min-height:21px;margin-top:5px}
 .sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 @media(max-width:1150px){.header .nav{font-size:13px;gap:24px}.text-link{font-size:13px}.figure-note{font-size:12px}}
 @media(max-width:850px){.header .nav{font-size:12px;gap:19px}.figure-step{font-size:12px}.figure-note{font-size:11px}}
-@media(max-width:680px){.brand-claim{font-size:11px}.figure-stage{aspect-ratio:1.28}.figure-formula{font-size:16px;bottom:1%}.figure-step{font-size:13px}.figure-note{font-size:12px}.hero-actions .text-link{font-size:13px}.scope summary{font-size:13px}}
-@media(max-width:365px){.brand-claim{font-size:10px}.hero-actions .text-link{font-size:12px}.figure-note{font-size:11px}}
-@media(prefers-reduced-motion:reduce){.loop-scene{transform:none!important}}
+@media(max-width:680px){.figure-step{font-size:13px}.hero-actions .text-link{font-size:13px}.scope summary{font-size:13px}}
+@media(max-width:365px){.hero-actions .text-link{font-size:12px}}
 
+
+/* Masthead lockup: SVG from the brand file, kept at wordmark scale. */
+.brand-lockup{display:block;flex-shrink:0;width:250px;line-height:0}
+.brand-lockup svg{display:block;width:100%;height:auto;overflow:visible}
+@media(max-width:1150px){.brand-lockup{width:232px}}
+@media(max-width:680px){.brand-lockup{width:214px}}
+@media(max-width:365px){.brand-lockup{width:196px}}
+
+/* Hero figure: the a-shaped story loop replaces the agent loop. */
+.hero-figure .figure-stage.story-stage{aspect-ratio:auto;margin:6px 0 4px}
+.story-stage>svg{display:block;width:100%;height:auto;overflow:visible}
+.story-playback{display:flex;gap:16px;flex-shrink:0}
+.story-playback .motion-button{display:revert!important}
+.story-playback .motion-button{padding-left:0}
+.hero-figure .story-controls{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}
+.story-step{position:relative}
+.story-step[aria-pressed='true']{border-top-color:var(--line)}
+.story-step::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:var(--red);transform:scaleX(0);transform-origin:left}
+.story-step[aria-pressed='true']::before{transform:scaleX(var(--progress,0))}
+@media(max-width:850px){.story-controls{gap:10px}}
+
+/* Three disciplines: one row on wide screens, a single column on phones. */
+.service-grid{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:36px}
+.service-grid .service{border-bottom:0;padding-bottom:0}
+@media(max-width:850px){.service-grid{column-gap:24px}.service h3 br{display:none}}
+@media(max-width:680px){.service-grid{grid-template-columns:1fr}.service-grid .service{border-bottom:1px solid var(--line);padding-bottom:24px}.service-grid .service:last-child{border-bottom:0;padding-bottom:0}}
+
+/* .btw: a full-bleed red band before the footer (paint extends past the shell
+   via border-image, so no horizontal overflow). */
+.btw{display:grid;grid-template-columns:180px minmax(0,1fr);gap:54px;align-items:baseline;margin-top:38px;padding:64px 0 76px;color:#fff;background:var(--red);border-image:conic-gradient(var(--red) 0 0) fill 0//0 100vw}
+.btw h2{color:#fff;font:italic 72px/1 var(--serif);letter-spacing:-.04em}
+.btw abbr{text-decoration:none}
+.btw p{max-width:760px;color:#fff;font:32px/1.4 var(--serif);letter-spacing:-.014em;text-wrap:pretty}
+.btw::selection,.btw ::selection{background:#fff;color:var(--red)}
+@media(max-width:850px){.btw{grid-template-columns:1fr;gap:24px;padding:48px 0 56px}.btw h2{font-size:60px}.btw p{font-size:26px;line-height:1.43}}
+@media(max-width:365px){.btw p{font-size:24px}}
 
 /* noscript progressive enhancement */
 .menu-button,.figure-controls,.motion-button,.figure-note,.contact-trigger{display:none!important}.system-top>span:last-child{display:none}@media(max-width:680px){#mobile-nav{display:flex!important;flex-wrap:wrap;gap:0 20px;font-size:10px}}

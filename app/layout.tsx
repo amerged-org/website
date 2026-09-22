@@ -3,7 +3,7 @@ import "./globals.css";
 
 const title = "amerged — Agents Merged into your business";
 const description =
-  "Micro SaaS, custom AI software, context engineering and hands-on AI training. Agents Merged into your business.";
+  "Custom AI software, agentic transformation, context engineering and hands-on AI training. Agents Merged into your business.";
 
 export const metadata: Metadata = {
   title,
