@@ -79,22 +79,54 @@ export function initExperience() {
     cleanups.push(() => sectionObserver.disconnect());
   }
 
-  // An explorable systems diagram with fully visible static labels.
+  // Context engineering figure (SMIL): the signal wave crosses one quarter of
+  // the funnel per layer. The layers below follow it; a click jumps there.
   const layers = [
     ['01 / EXTRACT', 'Capture the documents, decisions and exceptions behind a process.'],
     ['02 / STRUCTURE', 'Turn that knowledge into context: relevant facts, decision rules, permissions and tool access.'],
     ['03 / EXECUTE', 'Connect agents to your systems, with clear tasks, approvals and exception handling.'],
     ['04 / EVALUATE', 'Measure quality, reliability and manual effort. Use the results to improve the system.']
   ];
-  document.querySelectorAll('[data-layer]').forEach(button => listen(button, 'click', () => {
+  const knowledge = document.getElementById('amerged-knowledge');
+  const layerButtons = [...document.querySelectorAll('[data-layer]')];
+  const layerLabel = document.getElementById('layer-label');
+  const layerDescription = document.getElementById('layer-description');
+  const knowledgeClock = !!knowledge && typeof knowledge.getCurrentTime === 'function';
+  let activeLayer = -1;
+  function showLayer(index) {
+    if (index === activeLayer || !layers[index]) return;
+    activeLayer = index;
+    layerButtons.forEach((item, j) => item.setAttribute('aria-pressed', String(j === index)));
+    if (layerLabel) layerLabel.textContent = layers[index][0];
+    if (layerDescription) layerDescription.textContent = layers[index][1];
+  }
+  function paintKnowledge() {
+    if (!knowledgeClock) return;
+    const t = knowledge.getCurrentTime() % 16;
+    const index = Math.min(3, Math.floor(t / 4));
+    showLayer(index);
+    layerButtons[index]?.style.setProperty('--progress', String((t - index * 4) / 4));
+  }
+  layerButtons.forEach(button => listen(button, 'click', () => {
     const index = Number(button.getAttribute('data-layer'));
     if (!layers[index]) return;
-    document.querySelectorAll('[data-layer]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
-    const label = document.getElementById('layer-label');
-    const description = document.getElementById('layer-description');
-    if (label) label.textContent = layers[index][0];
-    if (description) description.textContent = layers[index][1];
+    if (knowledgeClock) knowledge.setCurrentTime(index * 4 + .05);
+    showLayer(index);
+    paintKnowledge();
   }));
+  if (knowledge && knowledgeClock) {
+    const syncKnowledge = () => {
+      if (reduced.matches || document.hidden) knowledge.pauseAnimations();
+      else knowledge.unpauseAnimations();
+    };
+    if (reduced.matches) knowledge.setCurrentTime(8);
+    syncKnowledge();
+    listen(document, 'visibilitychange', syncKnowledge);
+    listen(reduced, 'change', syncKnowledge);
+    const knowledgeTimer = window.setInterval(() => { if (!document.hidden) paintKnowledge(); }, 80);
+    cleanups.push(() => window.clearInterval(knowledgeTimer));
+    paintKnowledge();
+  }
 
   // Honest local-only prototype: the form exports a brief; it does not pretend to send mail.
   const dialog = document.getElementById('brief-dialog');
