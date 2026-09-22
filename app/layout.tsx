@@ -23,11 +23,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "amerged",
+    url: "https://amerged.com",
     title,
     description,
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title,
     description,
   },
