@@ -66,6 +66,28 @@ dialog{color:var(--ink);background:var(--paper);border:1px solid var(--ink);widt
 @media(max-width:365px){.hero-actions .text-link{font-size:12px}}
 
 
+/* SVG styles, moved out of the SVG markup: amerged.com's CSP blocks inline
+   <style> and style="" (see scripts/strip-inline-svg-styles.py). */
+#amerged-brand text,#amerged-footer-brand text{font-family:Georgia,"Times New Roman",serif;font-weight:400;fill:#171717}
+#amerged-brand .amg-word,#amerged-footer-brand .amg-word{font-family:Georgia,"Times New Roman",serif;font-size:64px;font-weight:400;letter-spacing:-2.9px}
+#amerged-brand #amg-brand-initial-a{font-style:italic}
+@media(prefers-reduced-motion:reduce){#amg-brand-agents{display:none!important}#amg-brand-drawn-a{opacity:1!important}#amg-brand-merged{transform:translate(0,0)!important}}
+#amerged-story-a{overflow:visible}
+#amerged-story-a text{font-family:Georgia,"Times New Roman",serif;fill:#171717;font-weight:400}
+#amerged-story-a .amg-label{font-size:29px;letter-spacing:-.5px}
+#amerged-story-a .amg-index{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:10px;letter-spacing:.75px;fill:#777772}
+#amerged-story-a .amg-caption{font-size:13px;fill:#777772;letter-spacing:0}
+#amerged-story-a .amg-micro{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace;font-size:8px;letter-spacing:1.05px;fill:#777772}
+#amerged-story-a .amg-statement{font-size:26px;font-style:italic;letter-spacing:-.3px}
+#amerged-story-a .amg-node{fill:#b12c2b;stroke:#b12c2b;stroke-width:.85}
+#amerged-story-a .amg-leader{fill:none;stroke:#9d9d98;stroke-width:.72;stroke-linecap:round;stroke-linejoin:round}
+#amerged-story-a .amg-part .amg-label,#amerged-story-a .amg-part .amg-index{transition:fill .5s}
+#amerged-story-a .amg-part.is-active .amg-index{fill:#b12c2b}
+#amerged-story-a .amg-part.is-active .amg-label{fill:#171717}
+#amerged-story-a .amg-moving-dot{fill:#b12c2b}
+@media(max-width:600px){#amerged-story-a .amg-label{font-size:34px}#amerged-story-a .amg-index{font-size:13px}#amerged-story-a .amg-caption,#amerged-story-a .amg-micro{display:none}#amerged-story-a .amg-statement{font-size:27px}}
+@media(prefers-reduced-motion:reduce){#amerged-story-a:not([data-motion="on"]) .amg-motion{display:none}#amerged-story-a .amg-part text{transition:none}}
+
 /* Masthead lockup: SVG from the brand file, kept at wordmark scale. */
 .brand-lockup{display:block;flex-shrink:0;width:250px;line-height:0}
 .brand-lockup svg{display:block;width:100%;height:auto;overflow:visible}

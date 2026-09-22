@@ -8,7 +8,6 @@ cut(/<g id="amg-brand-agents"[\s\S]*?<\/text><\/g>/);
 cut(/<animate attributeName="opacity" values="0;0;1;1"[^>]*\/>/);
 cut(/<animateTransform[^>]*\/>/);
 cut(/<text x="0" y="87"[\s\S]*?<\/text>/);
-cut(/@media\(prefers-reduced-motion:reduce\)\{[\s\S]*?\}\s*\}/);
 v = v.replace('id="amg-brand-drawn-a" opacity="0"', 'id="amg-brand-drawn-a" opacity="1"')
   .replace('<g id="amg-brand-merged" transform="translate(155 0)">', '<g id="amg-brand-merged">')
   .replace('viewBox="0 0 390 97"', 'viewBox="0 0 390 70"')
