@@ -152,6 +152,22 @@ dialog{color:var(--ink);background:var(--paper);border:1px solid var(--ink);widt
 .cookie-note button:hover{background:var(--red)}
 @media print{.cookie-note{display:none!important}}
 
+/* Mobile hero: the a first, then the headline and the call to action on the
+   first screen; the description follows below the buttons. */
+@media(max-width:680px){
+ .hero{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:14px 0 36px}
+ .hero-copy{display:contents}
+ .hero .hero-figure{order:1;width:100%;margin:0 0 22px;justify-self:auto}
+ .hero-figure .figure-stage.story-stage{margin-bottom:14px}
+ .hero-figure .story-figcaption{padding-bottom:0}
+ .story-caption{font-size:14px;gap:10px}
+ .story-progress{bottom:-10px}
+ .hero-kicker{order:2;margin:14px 0 12px}
+ .hero h1{order:3;font-size:clamp(48px,13.5vw,64px)}
+ .hero-actions{order:4;margin-top:22px}
+ .hero-description{order:5;margin-top:26px}
+}
+
 /* Three disciplines: one row on wide screens, a single column on phones. */
 .service-grid{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:36px}
 .service-grid .service{border-bottom:0;padding-bottom:0}
